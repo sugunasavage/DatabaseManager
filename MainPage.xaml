@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:DatabaseManager.Models"
+             x:Class="DatabaseManager.MainPage"
+             Title="Database Manager">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
+
+        <!-- Toolbar -->
+        <HorizontalStackLayout Grid.Row="0" Spacing="10" Padding="10">
+            <Label Text="Connection:"
+                   VerticalOptions="Center"/>
+
+            <Picker ItemsSource="{Binding SavedConnections}"
+                    SelectedItem="{Binding SelectedConnection}"
+                    ItemDisplayBinding="{Binding Name}"
+                    WidthRequest="200"
+                    VerticalOptions="Center"/>
+
+            <Button Text="New Connection"
+                    Command="{Binding AddConnectionCommand}"/>
+
+            <Button Text="Test Connection"
+                    Command="{Binding TestConnectionCommand}"/>
+
+            <Button Text="Execute Query"
+                    Command="{Binding ExecuteQueryCommand}"/>
+        </HorizontalStackLayout>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" ColumnDefinitions="300,*" ColumnSpacing="10">
+
+            <!-- Left Panel - Connection Settings -->
+            <ScrollView Grid.Column="0">
+                <VerticalStackLayout Spacing="10" Padding="10">
+                    <Label Text="Connection Settings"
+                           FontAttributes="Bold"
+                           FontSize="16"/>
+
+                    <Label Text="Name:"/>
+                    <Entry Text="{Binding SelectedConnection.Name}"
+                           Placeholder="Connection Name"/>
+
+                    <Label Text="Database Type:"/>
+                    <Picker x:Name="DatabaseTypePicker"
+                            SelectedItem="{Binding SelectedConnection.DatabaseType}"/>
+
+                    <Label Text="Server:"/>
+                    <Entry Text="{Binding SelectedConnection.Server}"
+                           Placeholder="localhost"/>
+
+                    <Label Text="Database:"/>
+                    <Entry Text="{Binding SelectedConnection.Database}"
+                           Placeholder="Database Name"/>
+
+                    <Label Text="Username:"/>
+                    <Entry Text="{Binding SelectedConnection.Username}"
+                           Placeholder="Username"/>
+
+                    <Label Text="Password:"/>
+                    <Entry Text="{Binding SelectedConnection.Password}"
+                           Placeholder="Password"
+                           IsPassword="True"/>
+
+                    <BoxView HeightRequest="1" Color="Gray" Margin="0,20,0,10"/>
+
+                    <Label Text="Database Objects"
+                           FontAttributes="Bold"
+                           FontSize="16"/>
+
+                    <CollectionView ItemsSource="{Binding DatabaseObjects}"
+                                    HeightRequest="300">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding Name}"
+                                       Padding="5"/>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Right Panel - Query Editor and Results -->
+            <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="10">
+
+                <!-- Query Editor -->
+                <Border Grid.Row="0"
+                        StrokeThickness="1"
+                        Stroke="Gray"
+                        Padding="10">
+                    <Grid RowDefinitions="Auto,*">
+                        <Label Grid.Row="0"
+                               Text="Query Editor"
+                               FontAttributes="Bold"
+                               Margin="0,0,0,10"/>
+
+                        <Editor Grid.Row="1"
+                                Text="{Binding QueryText}"
+                                FontFamily="Courier"
+                                FontSize="14"/>
+                    </Grid>
+                </Border>
+
+                <!-- Results -->
+                <Border Grid.Row="1"
+                        StrokeThickness="1"
+                        Stroke="Gray"
+                        Padding="10">
+                    <Grid RowDefinitions="Auto,*,Auto">
+                        <Label Grid.Row="0"
+                               Text="Results"
+                               FontAttributes="Bold"
+                               Margin="0,0,0,10"/>
+
+                        <ScrollView Grid.Row="1">
+                            <Label Text="{Binding QueryResults, Converter={StaticResource DataTableToStringConverter}}"
+                                   FontFamily="Courier"
+                                   FontSize="12"/>
+                        </ScrollView>
+
+                        <Label Grid.Row="2"
+                               Text="{Binding ExecutionTime}"
+                               FontSize="12"
+                               Margin="0,10,0,0"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="2"
+                Padding="10"
+                Margin="0,10,0,0">
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="{Binding StatusMessage}"
+                       VerticalOptions="Center"/>
+
+                <ActivityIndicator IsRunning="{Binding IsExecuting}"
+                                   IsVisible="{Binding IsExecuting}"
+                                   WidthRequest="20"
+                                   HeightRequest="20"/>
+            </HorizontalStackLayout>
+        </Border>
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <!-- Skip Xcode version validation -->
+    <_SkipXcodeVersionCheck>true</_SkipXcodeVersionCheck>
+    <_XcodeVersionCheckDisabled>true</_XcodeVersionCheckDisabled>
+  </PropertyGroup>
+</Project>

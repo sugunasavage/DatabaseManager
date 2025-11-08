@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Force Xcode version to match expected version -->
+    <_IsMatchingXcode>true</_IsMatchingXcode>
+  </PropertyGroup>
+</Project>

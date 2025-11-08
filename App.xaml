@@ -1,0 +1,20 @@
+﻿<?xml version = "1.0" encoding = "UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:DatabaseManager"
+             xmlns:helpers="clr-namespace:DatabaseManager.Helpers"
+             x:Class="DatabaseManager.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Value Converters -->
+            <helpers:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <helpers:DataTableToStringConverter x:Key="DataTableToStringConverter" />
+            <helpers:EnumToArrayConverter x:Key="EnumToArrayConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
