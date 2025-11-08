@@ -105,15 +105,27 @@ public class MainViewModel : INotifyPropertyChanged
 
     private Task AddConnection()
     {
-        var newConnection = new ConnectionInfo
+        try
         {
-            Name = $"New Connection {SavedConnections.Count + 1}",
-            DatabaseType = DatabaseType.SqlServer,
-            Server = "localhost"
-        };
+            var newConnection = new ConnectionInfo
+            {
+                Name = $"New Connection {SavedConnections.Count + 1}",
+                DatabaseType = DatabaseType.SqlServer,
+                Server = "localhost",
+                Database = "",
+                Username = "",
+                Password = ""
+            };
 
-        SavedConnections.Add(newConnection);
-        SelectedConnection = newConnection;
+            SavedConnections.Add(newConnection);
+            SelectedConnection = newConnection;
+
+            StatusMessage = $"New connection '{newConnection.Name}' created. Please configure and test it.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error creating connection: {ex.Message}";
+        }
 
         return Task.CompletedTask;
     }
@@ -130,9 +142,18 @@ public class MainViewModel : INotifyPropertyChanged
         var service = DatabaseServiceFactory.GetService(SelectedConnection.DatabaseType);
         var success = await service.TestConnectionAsync(SelectedConnection);
 
-        StatusMessage = success
-            ? "Connection successful!"
-            : "Connection failed. Please check your settings.";
+        if (success)
+        {
+            StatusMessage = "Connection successful! Loading database objects...";
+
+            // Load database objects after successful connection
+            await LoadDatabaseObjectsAsync();
+        }
+        else
+        {
+            StatusMessage = "Connection failed. Please check your settings.";
+            DatabaseObjects.Clear();
+        }
     }
 
     private async Task ExecuteQuery()
@@ -185,6 +206,14 @@ public class MainViewModel : INotifyPropertyChanged
     {
         if (SelectedConnection == null) return;
 
+        // Don't try to load if connection is not configured
+        if (string.IsNullOrWhiteSpace(SelectedConnection.Server))
+        {
+            DatabaseObjects.Clear();
+            StatusMessage = "Configure connection and test it to load database objects";
+            return;
+        }
+
         DatabaseObjects.Clear();
         StatusMessage = "Loading database objects...";
 
@@ -214,6 +243,7 @@ public class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
+            DatabaseObjects.Clear();
             StatusMessage = $"Error loading objects: {ex.Message}";
         }
     }

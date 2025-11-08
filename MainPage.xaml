@@ -67,17 +67,140 @@
 
                     <Label Text="Database Objects"
                            FontAttributes="Bold"
-                           FontSize="16"/>
+                           FontSize="16"
+                           Margin="0,0,0,5"/>
 
-                    <CollectionView ItemsSource="{Binding DatabaseObjects}"
-                                    HeightRequest="300">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Label Text="{Binding Name}"
-                                       Padding="5"/>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                    <Border StrokeThickness="1"
+                            Stroke="Gray"
+                            Padding="10"
+                            HeightRequest="400">
+                        <ScrollView>
+                            <VerticalStackLayout>
+                                <!-- Empty state message -->
+                                <Label Text="📋 Database Objects will appear here after connecting"
+                                       FontSize="13"
+                                       TextColor="Gray"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"
+                                       Padding="20"
+                                       Margin="0,50,0,0"/>
+
+                                <CollectionView ItemsSource="{Binding DatabaseObjects}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <VerticalStackLayout>
+                                            <!-- Database Node -->
+                                            <Grid ColumnDefinitions="20,*">
+                                                <Label Grid.Column="0"
+                                                       Text="🗄️"
+                                                       FontSize="14"/>
+                                                <Label Grid.Column="1"
+                                                       Text="{Binding Name}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       Margin="5,5,0,5"/>
+                                            </Grid>
+
+                                            <!-- Database Children (Tables, Views, Stored Procedures folders) -->
+                                            <CollectionView ItemsSource="{Binding Children}"
+                                                          Margin="20,0,0,0">
+                                                <CollectionView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <VerticalStackLayout>
+                                                            <!-- Folder Node -->
+                                                            <Grid ColumnDefinitions="20,*">
+                                                                <Label Grid.Column="0"
+                                                                       Text="📁"
+                                                                       FontSize="12"/>
+                                                                <Label Grid.Column="1"
+                                                                       Text="{Binding Name}"
+                                                                       FontSize="13"
+                                                                       Margin="5,3,0,3">
+                                                                    <Label.GestureRecognizers>
+                                                                        <TapGestureRecognizer
+                                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LoadChildrenCommand}"
+                                                                            CommandParameter="{Binding .}"/>
+                                                                    </Label.GestureRecognizers>
+                                                                </Label>
+                                                            </Grid>
+
+                                                            <!-- Folder Children (Tables, Views, Procedures) -->
+                                                            <CollectionView ItemsSource="{Binding Children}"
+                                                                          Margin="20,0,0,0">
+                                                                <CollectionView.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <VerticalStackLayout>
+                                                                            <!-- Table/View/Procedure Node -->
+                                                                            <Grid ColumnDefinitions="20,*">
+                                                                                <Label Grid.Column="0"
+                                                                                       FontSize="11">
+                                                                                    <Label.Triggers>
+                                                                                        <DataTrigger TargetType="Label"
+                                                                                                   Binding="{Binding Type}"
+                                                                                                   Value="2">
+                                                                                            <Setter Property="Text" Value="📁"/>
+                                                                                        </DataTrigger>
+                                                                                        <DataTrigger TargetType="Label"
+                                                                                                   Binding="{Binding Type}"
+                                                                                                   Value="3">
+                                                                                            <Setter Property="Text" Value="📊"/>
+                                                                                        </DataTrigger>
+                                                                                        <DataTrigger TargetType="Label"
+                                                                                                   Binding="{Binding Type}"
+                                                                                                   Value="4">
+                                                                                            <Setter Property="Text" Value="👁️"/>
+                                                                                        </DataTrigger>
+                                                                                        <DataTrigger TargetType="Label"
+                                                                                                   Binding="{Binding Type}"
+                                                                                                   Value="5">
+                                                                                            <Setter Property="Text" Value="⚙️"/>
+                                                                                        </DataTrigger>
+                                                                                    </Label.Triggers>
+                                                                                </Label>
+                                                                                <Label Grid.Column="1"
+                                                                                       Text="{Binding Name}"
+                                                                                       FontSize="12"
+                                                                                       Margin="5,2,0,2">
+                                                                                    <Label.GestureRecognizers>
+                                                                                        <TapGestureRecognizer
+                                                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LoadChildrenCommand}"
+                                                                                            CommandParameter="{Binding .}"/>
+                                                                                    </Label.GestureRecognizers>
+                                                                                </Label>
+                                                                            </Grid>
+
+                                                                            <!-- Columns -->
+                                                                            <CollectionView ItemsSource="{Binding Children}"
+                                                                                          Margin="20,0,0,0">
+                                                                                <CollectionView.ItemTemplate>
+                                                                                    <DataTemplate>
+                                                                                        <Grid ColumnDefinitions="20,*">
+                                                                                            <Label Grid.Column="0"
+                                                                                                   Text="🔑"
+                                                                                                   FontSize="10"/>
+                                                                                            <Label Grid.Column="1"
+                                                                                                   Text="{Binding Name}"
+                                                                                                   FontSize="11"
+                                                                                                   Margin="5,1,0,1"/>
+                                                                                        </Grid>
+                                                                                    </DataTemplate>
+                                                                                </CollectionView.ItemTemplate>
+                                                                            </CollectionView>
+                                                                        </VerticalStackLayout>
+                                                                    </DataTemplate>
+                                                                </CollectionView.ItemTemplate>
+                                                            </CollectionView>
+                                                        </VerticalStackLayout>
+                                                    </DataTemplate>
+                                                </CollectionView.ItemTemplate>
+                                            </CollectionView>
+                                        </VerticalStackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </VerticalStackLayout>
+                        </ScrollView>
+                    </Border>
                 </VerticalStackLayout>
             </ScrollView>
 
